@@ -31,7 +31,7 @@ I have deployed this in GCP and since in standard App Engine nothing can be writ
 # Dependencies
 Flask, Tensorflow, Keras, OpenCV
 
-# Credits
+# References
 https://github.com/gauravtheP/Real-Time-Facial-Expression-Recognition
 @inproceedings{aneja2016modeling,
   title={Modeling Stylized Character Expressions via Deep Learning},
