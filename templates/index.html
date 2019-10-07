@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Emotion Detector</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.8.0/Chart.min.css" integrity="sha256-aa0xaJgmK/X74WM224KMQeNQC2xYKwlAt08oZqjeF0E=" crossorigin="anonymous" />
+</head>
+<body>
+    <style>
+        body{
+            background-color: #E0E0E0;
+        }  
+    </style>
+    <div>
+        <div>
+            <div style="padding-top: 20px">
+                <center>
+                    <img src="static/images/thinking.png" alt="Logo" width="100" height="100">
+                    <br>
+                    <br>
+                    <h1>Emotion Detector</h1>
+                </center>
+            </div>
+            <form action="/result" method="POST" enctype="multipart/form-data">
+                <div style="padding-left: 200px; padding-right: 200px; padding-top: 30px">
+                    <center>
+                        <label>Upload a human or animated face image</label>
+                        <div class="custom-file">
+                            <input required align="center" class="custom-file-input" name="data" type="file" autofocus="autofocus" id="customFile" accept=".jpg">
+                            <label class="custom-file-label" for="customFile">Choose file</label>
+                        </div>
+                        <p style="text-align:right;padding-right: 75px"><font size="1.5">Only jpg allowed</font></p>
+                        <input align="center" class="btn btn-primary" type="submit" value="Upload">
+                        <script>
+                            $(".custom-file-input").on("change", function() {
+                              var fileName = $(this).val().split("\\").pop();
+                              $(this).siblings(".custom-file-label").addClass("selected").html(fileName);
+                            });
+                            var uploadField = document.getElementById("customFile")
+                            uploadField.onchange = function(){
+                                if(this.files[0].size > 1048576){
+                                    alert("File is too big !!!");
+                                    this.value = "";
+                                }
+                                if(this.files[0].name.split('.').pop() != "jpg"){
+                                    alert("File is not specified type !!!");
+                                    this.value = "";
+                                }
+                            }
+                        </script>
+                    </center>
+                </div>
+            </form>
+        </div>
+        <div class="left" style="padding-top: 20px; padding-left: 100px; padding-right: 100px; float: left">
+            <h2>Entered image</h2>
+            <br>
+            {% if hasImage %}
+                <img src="{{data}}" alt="Input" height="300" width="300">
+            {% endif %}
+            <br>
+            <br>
+        </div>
+        <div class="right" style="padding-top: 20px; padding-right: 100px; float: right">
+            <div style="padding-left: 100px">
+            {% if hasImage and pos == 1 %}
+                <h2>Dominant Emotion => Anger  <img src="static/images/angry.png" alt="Angry" width="75" height="75"></h2>
+            {% elif hasImage and pos == 2 %}
+                <h2>Dominant Emotion => Disgust  <img src="static/images/disgust.png" alt="Disgust" width="75" height="75"></h2>
+            {% elif hasImage and pos == 3 %}
+                <h2>Dominant Emotion => Fear  <img src="static/images/fear.png" alt="Fear" width="75" height="75"></h2>
+            {% elif hasImage and pos == 4 %}
+                <h2>Dominant Emotion => Happy  <img src="static/images/happy.png" alt="Happy" width="75" height="75"></h2>
+            {% elif hasImage and pos == 5 %}
+                <h2>Dominant Emotion => Neutral  <img src="static/images/neutral.png" alt="Neutral" width="75" height="75"></h2>
+            {% elif hasImage and pos == 6 %}
+                <h2>Dominant Emotion => Sad  <img src="static/images/sad.png" alt="Sad" width="75" height="75"></h2>
+            {% elif hasImage and pos == 7 %}
+                <h2>Dominant Emotion => Surpised  <img src="static/images/surprised.png" alt="Surprised" width="75" height="75"></h2>
+            {% endif %}
+            </div>
+            <canvas id="myChart" width="800" width="350" height="350"></canvas>
+            <script>
+                Chart.defaults.global.defaultFontFamily='Lato';
+                let myChart = document.getElementById("myChart").getContext("2d");
+                let barChart = new Chart(myChart, {
+                    type: 'horizontalBar',
+                    data: {
+                        labels:['Anger','Disgust','Fear','Happy','Neutral','Sad','Surprise'],
+                        datasets:[{
+                            label:'Toxicity Levels in Percentage',
+                            data:['{% if hasImage %} {{ predictions[0][0]*100 }} {% else %} {{ 0 }} {% endif %}', '{% if hasImage %} {{ predictions[0][1]*100 }} {% else %} {{ 0 }} {% endif %}', '{% if hasImage %} {{ predictions[0][2]*100 }} {% else %} {{ 0 }} {% endif %}', '{% if hasImage %} {{ predictions[0][3]*100 }} {% else %} {{ 0 }} {% endif %}', '{% if hasImage %} {{ predictions[0][4]*100 }} {% else %} {{ 0 }} {% endif %}', '{% if hasImage %} {{ predictions[0][5]*100 }} {% else %} {{ 0 }} {% endif %}', '{% if hasImage %} {{ predictions[0][6]*100 }} {% else %} {{ 0 }} {% endif %}'],
+                            backgroundColor: [
+                                'rgba(255, 99, 132, 0.6)',
+                                'rgba(54, 162, 235, 0.6)',
+                                'rgba(255, 206, 86, 0.6)',
+                                'rgba(75, 192, 192, 0.6)',
+                                'rgba(153, 102, 255, 0.6)',
+                                'rgba(255, 159, 64, 0.6)'
+                             ],
+                             borderColor: [
+                                'rgba(255, 99, 132, 1)',
+                                'rgba(54, 162, 235, 1)',
+                                'rgba(255, 206, 86, 1)',
+                                'rgba(75, 192, 192, 1)',
+                                'rgba(153, 102, 255, 1)',
+                                'rgba(255, 159, 64, 1)'
+                            ],
+                            borderWidth: 1,
+                            hoverBorderWidth: 3,
+                            hoverBorderColor: '#000',
+                        }]
+                    },
+                    options: {
+                        scales: {
+                            xAxes: [{
+                                barPercentage: 0.5,
+                                barThickness: 0.1,
+                                gridLines: {
+                                    display: false
+                                }
+                            }],
+                            yAxes: [{
+                                gridLines: {
+                                    display: false
+                                }
+                            }]
+                        },
+                        legend: {
+                            display: false
+                        },
+                        title: {
+                            display: true,
+                            text: 'Emotion Prediction in Detail (in percentage)',
+                            fontSize: '18'
+                        },
+                        responsive: false
+                    }
+                });
+            </script>
+        </div>
+    </div>
+</body>
+</html>
