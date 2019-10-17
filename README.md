@@ -41,3 +41,16 @@ https://github.com/gauravtheP/Real-Time-Facial-Expression-Recognition
   year={2016},
   organization={Springer}
 }
+
+# My Original Contribution & Learnings
+
+Contribution => 
+Preprocessed the above mentioned datasets.
+Reimplemented the code with some modification to train the model and use it for prediction as its done in the reference github link.
+Used the generated model in a flask application which was built so that prediction for an input can be made interactive. 
+Deployed on GCP using App Engine.
+
+Major Learnings => 
+Learnt how to use transfer learning to get to bottleneck feature before using it in the CNN model for multiclss classification. 
+Learnt how to built Flask application and serve a saved keras model. 
+Learnt how to deploy on GCP using App Engine, store images and also to send to front end without storing in form of Base64.
