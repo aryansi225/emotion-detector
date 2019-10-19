@@ -32,7 +32,7 @@ I have deployed this in GCP and since in standard App Engine nothing can be writ
 Flask, Tensorflow, Keras, OpenCV
 
 # References
-https://github.com/gauravtheP/Real-Time-Facial-Expression-Recognition
+https://medium.com/datadriveninvestor/real-time-facial-expression-recognition-f860dacfeb6a
 @inproceedings{aneja2016modeling,
   title={Modeling Stylized Character Expressions via Deep Learning},
   author={Aneja, Deepali and Colburn, Alex and Faigin, Gary and Shapiro, Linda and Mones, Barbara},
